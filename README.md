@@ -6,11 +6,17 @@
 - install npm
 - run `npm install`
 
-## build
-`npm run build`
+## copy environtment file
+`cp .env.example .env`
+
+## Run migration file
+`knex migrate:latest`
+
+## start at development
+`npm run dev`
 
 ## start the server
 `npm run start`
 
-## start the server (automatic restart)
-`npm run watch` 
+
+please check `Test Kemenkes - Parking.postman_collection.json` at your root folder for api documentation
