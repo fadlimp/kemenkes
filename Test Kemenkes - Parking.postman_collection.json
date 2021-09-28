@@ -1,0 +1,402 @@
+{
+	"info": {
+		"_postman_id": "13d24c2f-bcea-4511-a1ca-9dede54e6bff",
+		"name": "Test Kemenkes - Parking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Checkin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"registrationNumber\": \"B 7878 C\",\n    \"color\": \"black\",\n    \"checkinAt\": \"2020-09-12 12:12:30\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/parking/checkin",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"parking",
+						"checkin"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Checkin",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"registrationNumber\": \"B 7878 C\",\n    \"color\": \"black\",\n    \"checkinAt\": \"2020-09-12 12:12:30\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/parking/checkin",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"parking",
+								"checkin"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "147"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 03:00:07 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": 201,\n    \"message\": \"Successfully checkIn\",\n    \"data\": {\n        \"data\": {\n            \"registrationNumber\": \"B 7878 C\",\n            \"color\": \"black\",\n            \"checkinAt\": \"2020-09-12 12:12:30\"\n        }\n    }\n}"
+				},
+				{
+					"name": "Checkin Failed",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"registrationNumber\": \"F 5927 FEI\",\n    \"color\": \"red\",\n    \"checkinAt\": \"2020-09-18 12:12:30\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/parking/checkin",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"parking",
+								"checkin"
+							]
+						}
+					},
+					"status": "Unprocessable Entity",
+					"code": 422,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "183"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 04:12:33 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": 422,\n    \"message\": \"Data sudah checkin sebelumnya / belum melakukan checkout\",\n    \"data\": {\n        \"data\": {\n            \"registrationNumber\": \"F 5927 FEI\",\n            \"color\": \"red\",\n            \"checkinAt\": \"2020-09-18 12:12:30\"\n        }\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Checkout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"registrationNumber\": \"B 7878 C\",\n    \"color\": \"black\",\n    \"checkoutAt\": \"2020-09-12 13:12:30\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/parking/checkout",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"parking",
+						"checkout"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Checkout Not Found",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"registrationNumber\": \"B 7878 C\",\n    \"color\": \"black\",\n    \"checkoutAt\": \"2020-09-12 13:12:30\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/parking/checkout",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"parking",
+								"checkout"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "148"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 03:17:17 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": 404,\n    \"message\": \"Data Tidak Ditemukan\",\n    \"data\": {\n        \"data\": {\n            \"registrationNumber\": \"B 7878 C\",\n            \"color\": \"black\",\n            \"checkoutAt\": \"2020-09-12 13:12:30\"\n        }\n    }\n}"
+				},
+				{
+					"name": "Checkout",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"registrationNumber\": \"B 7878 C\",\n    \"color\": \"black\",\n    \"checkoutAt\": \"2020-09-12 13:12:30\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/parking/checkout",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"parking",
+								"checkout"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "145"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 03:19:54 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": 201,\n    \"message\": \"Berhasil checkOut\",\n    \"data\": {\n        \"data\": {\n            \"registrationNumber\": \"B 7878 C\",\n            \"color\": \"black\",\n            \"checkoutAt\": \"2020-09-12 13:12:30\"\n        }\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Get List Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/parking/list?registrationNumber=B 7878 C",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"parking",
+						"list"
+					],
+					"query": [
+						{
+							"key": "registrationNumber",
+							"value": "B 7878 C"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get List Data by Register Number",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/parking/list?registrationNumber=B 7878 C",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"parking",
+								"list"
+							],
+							"query": [
+								{
+									"key": "registrationNumber",
+									"value": "B 7878 C"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "438"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 09:27:51 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": 200,\n    \"message\": \"Data Mobil/Motor Yang sedang parkir\",\n    \"data\": {\n        \"result\": [\n            {\n                \"id\": \"49c0dc27-a88a-48ff-aaaa-f1d8af4e1796\",\n                \"parking_lot_id\": \"07c96943-4a20-41a1-902f-05353cfff240\",\n                \"register_number\": \"F 5927 FEI\",\n                \"color\": \"red\",\n                \"fee_amount\": 0,\n                \"duration_minutes\": 0,\n                \"checked_in\": \"2020-09-18T05:12:30.000Z\",\n                \"checked_out\": null,\n                \"created_at\": \"2021-09-28T04:12:27.629Z\",\n                \"updated_at\": \"2021-09-28T04:17:43.118Z\",\n                \"deleted_at\": null,\n                \"slot_number\": 1\n            }\n        ]\n    }\n}"
+				},
+				{
+					"name": "Get List Data by Color",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/parking/list?color=red",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"parking",
+								"list"
+							],
+							"query": [
+								{
+									"key": "color",
+									"value": "red"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "438"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 09:27:51 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": 200,\n    \"message\": \"Data Mobil/Motor Yang sedang parkir\",\n    \"data\": {\n        \"result\": [\n            {\n                \"id\": \"49c0dc27-a88a-48ff-aaaa-f1d8af4e1796\",\n                \"parking_lot_id\": \"07c96943-4a20-41a1-902f-05353cfff240\",\n                \"register_number\": \"F 5927 FEI\",\n                \"color\": \"red\",\n                \"fee_amount\": 0,\n                \"duration_minutes\": 0,\n                \"checked_in\": \"2020-09-18T05:12:30.000Z\",\n                \"checked_out\": null,\n                \"created_at\": \"2021-09-28T04:12:27.629Z\",\n                \"updated_at\": \"2021-09-28T04:17:43.118Z\",\n                \"deleted_at\": null,\n                \"slot_number\": 1\n            }\n        ]\n    }\n}"
+				}
+			]
+		}
+	]
+}

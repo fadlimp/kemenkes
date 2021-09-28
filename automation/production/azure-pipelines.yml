@@ -1,0 +1,67 @@
+trigger:
+  - refs/tags/*
+
+resources:
+  - repo: self
+
+variables:
+  - group: VG-B2C-PROD
+
+stages:
+  - stage: Build
+    displayName: Build Stage
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          name: '$(hostedPoolName)'
+        steps:
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(Build.Repository.Name)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(registryServiceConnection)
+              tags: |
+                $(TAGS)
+
+  - stage: Deploy
+    displayName: Deploy Stage
+    dependsOn: Build
+    jobs:
+      - deployment: Deploy
+        displayName: Deploy
+        pool:
+          name: '$(hostedPoolName)'
+        environment: $(envKubernetes).$(envKubernetesNamespaces)
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: CmdLine@2
+                  displayName: Manifest checkout
+                  inputs:
+                    script: |
+                      rm -rf $(Build.SourcesDirectory)/*
+                      rm -r $(Build.SourcesDirectory)/.*
+                      git clone https://atlantica:$(devopsPat)@dev.azure.com/atlantica/devsecops-astraotoshop/_git/config-files --progress --branch $(env)/$(Build.Repository.Name) --single-branch --depth=1 $(Build.SourcesDirectory)
+                      exit
+                - task: KubernetesManifest@0
+                  displayName: Create imagePullSecret
+                  inputs:
+                    action: createSecret
+                    secretName: $(imagePullSecret)
+                    dockerRegistryEndpoint: $(registryServiceConnection)
+                - task: KubernetesManifest@0
+                  displayName: Deploy to Kubernetes cluster
+                  inputs:
+                    action: deploy
+                    manifests: |
+                      $(Build.SourcesDirectory)/kubernetes/configmaps.yml
+                      $(Build.SourcesDirectory)/kubernetes/deployment.yml
+                      $(Build.SourcesDirectory)/kubernetes/service.yml
+                    imagePullSecrets: |
+                      $(imagePullSecret)
+                    containers: |
+                      $(registryServerName)/$(Build.Repository.Name):$(TAGS)

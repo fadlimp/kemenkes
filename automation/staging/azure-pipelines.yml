@@ -1,0 +1,90 @@
+trigger:
+  - master
+
+resources:
+  - repo: self
+
+variables:
+  - group: VG-B2C-STG
+
+stages:
+  - stage: Quality
+    displayName: Quality Stage
+    jobs:
+      - job: Quality
+        displayName: Quality
+        pool:
+          name: '$(hostedPoolName)'
+        steps:
+          - task: SonarSource.sonarqube.15B84CA1-B62F-4A2A-A403-89B77A063157.SonarQubePrepare@4
+            displayName: Prepare analysis on SonarQube
+            inputs:
+              SonarQube: $(sonarQube)
+              scannerMode: CLI
+              configMode: manual
+              cliProjectKey: aop-$(Build.Repository.Name)
+              cliProjectName: aop-$(Build.Repository.Name)
+              cliProjectVersion: $(env).$(Build.BuildNumber)
+          - task: SonarSource.sonarqube.6D01813A-9589-4B15-8491-8164AEB38055.SonarQubeAnalyze@4
+            displayName: Run Code Analysis
+          - task: SonarSource.sonarqube.291ed61f-1ee4-45d3-b1b0-bf822d9095ef.SonarQubePublish@4
+            displayName: Publish Quality Gate Result
+            
+  - stage: Build
+    displayName: Build Stage
+    dependsOn: Quality
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          name: '$(hostedPoolName)'
+        steps:
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(Build.Repository.Name)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(registryServiceConnection)
+              tags: |
+                $(env).$(Build.BuildNumber)
+
+  - stage: Deploy
+    displayName: Deploy Stage
+    dependsOn: Build
+    jobs:
+      - deployment: Deploy
+        displayName: Deploy
+        pool:
+          name: '$(hostedPoolName)'
+        environment: $(envKubernetes).$(envKubernetesNamespaces)
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: CmdLine@2
+                  displayName: Manifest checkout
+                  inputs:
+                    script: |
+                      rm -rf $(Build.SourcesDirectory)/*
+                      rm -r $(Build.SourcesDirectory)/.*
+                      git clone https://atlantica:$(devopsPat)@dev.azure.com/atlantica/devsecops-astraotoshop/_git/config-files --progress --branch $(env)/$(Build.Repository.Name) --single-branch --depth=1 $(Build.SourcesDirectory)
+                      exit
+                - task: KubernetesManifest@0
+                  displayName: Create imagePullSecret
+                  inputs:
+                    action: createSecret
+                    secretName: $(imagePullSecret)
+                    dockerRegistryEndpoint: $(registryServiceConnection)
+                - task: KubernetesManifest@0
+                  displayName: Deploy to Kubernetes cluster
+                  inputs:
+                    action: deploy
+                    manifests: |
+                      $(Build.SourcesDirectory)/kubernetes/configmaps.yml
+                      $(Build.SourcesDirectory)/kubernetes/deployment.yml
+                      $(Build.SourcesDirectory)/kubernetes/service.yml
+                    imagePullSecrets: |
+                      $(imagePullSecret)
+                    containers: |
+                      $(registryServerName)/$(Build.Repository.Name):$(env).$(Build.BuildNumber)
